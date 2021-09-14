@@ -1,0 +1,22 @@
+# https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-mapping-external-services
+kind: Service
+apiVersion: v1
+metadata:
+  name: mypostgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+# https://confluence.atlassian.com/jirakb/configuring-database-connection-results-in-error-host-xxxxxxx-is-not-allowed-to-connect-to-this-mysql-server-358908249.html
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: mypostgres
+  namespace: default
+subsets:
+  - addresses:
+      - ip: 10.205.18.36 # UPDATE TO YOUR MYSQL IP ADDRESS
+    ports:
+      - port: 5432

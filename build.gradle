@@ -1,0 +1,119 @@
+buildscript {                        // 定义脚本使用资源
+    apply from: 'dependencies.gradle' // 引入所需要的依赖库文件
+    repositories {                        // 脚本资源仓库
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+    dependencies {                        // 依赖库
+        classpath ("org.springframework.boot:spring-boot-gradle-plugin:2.3.7.RELEASE")
+    }
+}
+
+
+apply plugin: 'jacoco'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+group 'com.tw'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.7.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.7.RELEASE'
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.7.RELEASE")
+    implementation 'org.mockito:mockito-core:2.4.1'
+    implementation 'org.postgresql:postgresql:42.2.18'
+    compileOnly('org.projectlombok:lombok:1.18.18') // 在编译的时候生效
+    annotationProcessor('org.projectlombok:lombok:1.18.18') // 在注解的时候让其生效
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.0"
+
+}
+
+
+//
+//// 将依赖包复制到lib目录
+//task copyJar(type: Copy) {
+//    // 清除现有的lib目录
+//    delete "$buildDir\\libs\\lib"
+//    from configurations.compileClasspath
+//    into "$buildDir\\libs\\lib"
+//}
+//
+//// 拷贝配置文件
+//task copyConfigFile(type: Copy) {
+//    // 清除现有的配置目录
+//    delete "$buildDir\\libs\\config"
+//    from('src/main/resources')
+//    into 'build/libs/config'
+//}
+//
+//// 配置bootJar进行打包
+//bootJar {
+//    // 排除所有的jar
+//    excludes = ["*.jar"]
+//    // lib目录的清除和复制任务
+//    dependsOn copyJar
+//    // 配置目录的清除和复制任务
+//    dependsOn copyConfigFile
+//
+//    // 指定依赖包的路径
+//    manifest {
+//        attributes "Manifest-Version": 1.0,
+//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
+//    }
+//}
+test {
+    jacoco{
+        excludes = ['com/tw/config/**/*',
+                    'com/tw/constant/**/*',
+                    'com/tw/UserTrainApplication.class']
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/tw/config/**/*',
+                    'com/tw/constant/**/*',
+                    'com/tw/controller/dto/**/*',
+                    'com/tw/service/domain/**/*',
+                    'com/tw/dao/entity/**/*',
+                    'com/tw/UserTrainApplication.class'])
+        }))
+    }
+
+}
+
+task jacocoReport(type: JacocoReport) {
+    reports {
+        xml {
+            enabled true // coveralls plugin depends on xml format report
+        }
+
+        html {
+            enabled true
+        }
+    }
+}
+
+
+
+check.dependsOn jacocoTestReport
+
+test {
+    useJUnitPlatform()
+}

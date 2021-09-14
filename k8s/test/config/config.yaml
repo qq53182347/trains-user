@@ -1,0 +1,11 @@
+apiVersion: "v1"
+kind: ConfigMap
+metadata:
+  name: common-config
+data:
+  SPRING_PROFILES_ACTIVE: test
+  USER_SERVICE_ENDPOINT: http://trains-user:8083
+  EMAIL_SERVICE_ENDPOINT: http://trains-email:8088
+  DATASOURCE_URL: "jdbc:postgresql://mypostgres:5432/postgres"
+  DATASOURCE_USERNAME: "cG9zdGdyZXM="
+  DATASOURCE_PASSWORD: "MTIzNDU2"

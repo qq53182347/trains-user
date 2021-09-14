@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /dev
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl_auto: none
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect  #设置方言
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 123456
+

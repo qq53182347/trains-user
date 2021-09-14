@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-config
+data:
+  SPRING_PROFILES_ACTIVE=test
+  USER_SERVICE_ENDPOINT=http://trains-user
+  EMAIL_SERVICE_ENDPOINT=http://trains-email
+  DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/postgres
+  DATASOURCE_USERNAME=postgres
+  DATASOURCE_PASSWORD=123456

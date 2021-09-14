@@ -1,0 +1,42 @@
+# https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-apiversion-definition-guide.html
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trains-user-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trains-user
+  template:
+    metadata:
+      labels:
+        app: trains-user
+        env: test
+    spec:
+      containers:
+        - name: trains-user
+          image: trains-user
+          imagePullPolicy: Never
+          ports:
+            - name: http-port
+              containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: common-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trains-user-service
+  labels:
+    name: trains-user
+    visualize: "true"
+spec:
+  selector:
+    app: trains-user
+    env: test
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083

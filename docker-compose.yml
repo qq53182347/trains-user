@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  trains-user:
+    build: ./
+    image: trains-user
+    environment:
+      - SPRING_PROFILES_ACTIVE
+      - DATASOURCE_URL
+      - DATASOURCE_USERNAME
+      - DATASOURCE_PASSWORD
+    expose:
+      - 8083
+    ports:
+      - 8083:8083
+    networks:
+      - internal_access
+      - external_access # db access
+
+
+networks:
+  #内部网络
+  internal_access:
+    internal: true
+  external_access:
+

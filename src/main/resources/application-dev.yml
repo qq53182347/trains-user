@@ -1,0 +1,47 @@
+server:
+  port: 8083
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl_auto: none
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect  #设置方言
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 123456
+  flyway:
+    # 是否启用flyway
+    enabled: true
+    ## 编码格式，默认UTF-8
+    encoding: UTF-8
+    ## 迁移sql脚本文件存放路径，默认db/migration
+    locations: classpath:db/migration
+    ## 迁移sql脚本文件名称的前缀，默认V
+    sqlMigrationPrefix: V
+    ## 迁移sql脚本文件名称的分隔符，默认2个下划线__
+    sqlMigrationSeparator: __
+    # 迁移sql脚本文件名称的后缀
+    sqlMigrationSuffixes: .sql
+    # 迁移时是否进行校验，默认true
+    validateOnMigrate: false
+    # 设置为true，当迁移发现数据库非空且存在没有元数据的表时，自动执行基准迁移，新建schema_version表
+    baselineOnMigrate: true
+    # postgres10没有引入这个不提示错误，postgres12没有引入会报错
+    schemas: myschema, site_issue
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: shutdown
+      base-path: /actuator # 监控服务的父路径
+  endpoint:
+    shutdown:
+      enabled: false
+
+logging:
+  level: # 需要配置Map集合
+    root: info # 基本的日志级别
